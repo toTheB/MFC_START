@@ -68,17 +68,7 @@ void CMFCSTARTView::OnDraw(CDC* pDC)
 	// TODO: 在此处为本机数据添加绘制代码
 	if (_mouseDown)
 	{
-		CPen solidPen;
-		solidPen.CreatePen(PS_SOLID, 1, AFX_IDC_COLOR_DARKBLUE);
-		// 切换画笔
-		_oldPen = pDC->SelectObject(&solidPen);
-		pDC->SetROP2(R2_XORPEN);
-		pDC->SelectStockObject(NULL_BRUSH);
-		pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);
-		pDC->Rectangle(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);
-		_oldPoint = _curPoint;
-		// 恢复画笔
-		pDC->SelectObject(_oldPen);
+		DrawCircle();
 	}
 
 }
@@ -155,6 +145,61 @@ void CMFCSTARTView::OnLButtonUp(UINT nFlags, CPoint point)
 	_mouseDown = false;
 
 	CView::OnLButtonUp(nFlags, point);
+}
+
+void CMFCSTARTView::DrawDot()
+{
+	auto pDC = GetDC();
+	pDC->SetPixel(_curPoint, AFX_IDC_COLOR_DARKBLUE);
+}
+
+void CMFCSTARTView::DrawLine()
+{
+	auto pDC = GetDC();
+	// 切换画笔
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 1, AFX_IDC_COLOR_DARKBLUE);
+	_oldPen = pDC->SelectObject(&pen);
+	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	// 覆盖旧位置
+	pDC->MoveTo(_startPoint);
+	pDC->LineTo(_oldPoint);
+	// 画新位置
+	pDC->MoveTo(_startPoint);
+	pDC->LineTo(_curPoint);
+	_oldPoint = _curPoint; // 更新旧点
+	pDC->SelectObject(_oldPen);// 恢复画笔
+}
+
+void CMFCSTARTView::DrawRec()
+{
+	CDC* pDC = GetDC();
+	// 切换画笔
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 1, AFX_IDC_COLOR_DARKBLUE);
+	_oldPen = pDC->SelectObject(&pen);
+	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
+	pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	pDC->Rectangle(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
+	_oldPoint = _curPoint;// 更新旧点
+	// 恢复画笔
+	pDC->SelectObject(_oldPen);
+}
+
+void CMFCSTARTView::DrawCircle()
+{
+	CDC* pDC = GetDC();
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 1, AFX_IDC_COLOR_DARKBLUE);
+	_oldPen = pDC->SelectObject(&pen);
+	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
+	pDC->Ellipse(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	pDC->Ellipse(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
+	_oldPoint = _curPoint;// 更新旧点
+	// 恢复画笔
+	pDC->SelectObject(_oldPen);
 }
 
 

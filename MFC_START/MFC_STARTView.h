@@ -54,13 +54,21 @@ protected:
 	CPoint _oldPoint;
 	CPoint _curPoint;
 	bool _mouseDown;
+	int _drawTASK;
+
+	// 成员函数
+protected:
+	void DrawDot();// 点
+	void DrawLine();// 线
+	void DrawRec();// 矩形
+	void DrawCircle();// 圆
 
 	//常量
 public:
-	static const int DRAW_DOT = 0;
-	static const int DRAW_LINE = 1;
-	static const int DRAW_REC = 2;
-	static const int DRAW_CIRCLE = 3;
+	static const int DRAW_DOT = 0;// 点
+	static const int DRAW_LINE = 1;// 线
+	static const int DRAW_REC = 2;// 矩形
+	static const int DRAW_CIRCLE = 3;// 圆
 	static const int DRAW_POLY = 4;
 	static const int DRAW_CURVE = 5;
 };
