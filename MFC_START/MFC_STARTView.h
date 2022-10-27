@@ -56,7 +56,7 @@ protected:
 	CPoint _oldPoint;
 	CPoint _curPoint;
 	bool _mouseDown;
-	int _drawTASK;
+	int _drawTask;
 	DrawToolsDlg* _toolDlg;
 
 	// 成员函数

@@ -47,6 +47,7 @@ CMFCSTARTView::CMFCSTARTView() noexcept
 	_oldPen = nullptr;
 	_mouseDown = false;
 	_toolDlg = nullptr;
+	_drawTask = DRAW_DOT;
 }
 
 CMFCSTARTView::~CMFCSTARTView()

@@ -7,7 +7,6 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MFCSTARTTYPE                130
 #define IDD_DRAWTOOLSDLG                312
-#define IDCANCEL                        1003
 #define IDC_TOOLSCOMBO                  1004
 #define ID_32771                        32771
 #define ID_OpenDTDlgCmd                 32772
