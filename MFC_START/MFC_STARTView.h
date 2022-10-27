@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "DrawToolsDlg.h"
 
 
 class CMFCSTARTView : public CView
@@ -46,6 +47,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	void OpenDTDlgCmd();
 
 	// 成员变量
 protected:
@@ -55,6 +57,7 @@ protected:
 	CPoint _curPoint;
 	bool _mouseDown;
 	int _drawTASK;
+	DrawToolsDlg* _toolDlg;
 
 	// 成员函数
 protected:
@@ -62,6 +65,7 @@ protected:
 	void DrawLine();// 线
 	void DrawRec();// 矩形
 	void DrawCircle();// 圆
+
 
 	//常量
 public:

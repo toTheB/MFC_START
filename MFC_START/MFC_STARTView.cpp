@@ -13,6 +13,8 @@
 #include "MFC_STARTDoc.h"
 #include "MFC_STARTView.h"
 
+#include "DrawToolsDlg.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -33,6 +35,8 @@ BEGIN_MESSAGE_MAP(CMFCSTARTView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
+	// 打开绘图工具对话框
+	ON_COMMAND(1, &CMFCSTARTView::OpenDTDlgCmd)
 END_MESSAGE_MAP()
 
 // CMFCSTARTView 构造/析构
@@ -42,10 +46,13 @@ CMFCSTARTView::CMFCSTARTView() noexcept
 	// TODO: 在此处添加构造代码
 	_oldPen = nullptr;
 	_mouseDown = false;
+	_toolDlg = nullptr;
 }
 
 CMFCSTARTView::~CMFCSTARTView()
 {
+	if (_toolDlg != nullptr)
+		delete _toolDlg;
 }
 
 BOOL CMFCSTARTView::PreCreateWindow(CREATESTRUCT& cs)
@@ -145,6 +152,16 @@ void CMFCSTARTView::OnLButtonUp(UINT nFlags, CPoint point)
 	_mouseDown = false;
 
 	CView::OnLButtonUp(nFlags, point);
+}
+
+void CMFCSTARTView::OpenDTDlgCmd()
+{
+	if (_toolDlg == nullptr)
+	{
+		_toolDlg = new DrawToolsDlg();
+		_toolDlg->Create(IDD_DRAWTOOLSDLG, this);
+	}
+	_toolDlg->ShowWindow(SW_SHOW);
 }
 
 void CMFCSTARTView::DrawDot()
