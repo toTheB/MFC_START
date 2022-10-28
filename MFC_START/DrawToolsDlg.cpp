@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(DrawToolsDlg, CDialog)
 DrawToolsDlg::DrawToolsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DRAWTOOLSDLG, pParent)
 {
-
+	m_pParentWnd = pParent;
 }
 
 DrawToolsDlg::~DrawToolsDlg()
@@ -62,6 +62,6 @@ BOOL DrawToolsDlg::OnInitDialog()
 void DrawToolsDlg::OnCbnSelchangeToolscombo()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CMFCSTARTView* parentWnd = dynamic_cast<CMFCSTARTView*>(m_pParentWnd);
+	auto parentWnd = dynamic_cast<CMFCSTARTView*>(m_pParentWnd);
 	parentWnd->DrawTask = _toolsCombo.GetCurSel();
 }

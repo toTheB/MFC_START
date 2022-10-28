@@ -3,6 +3,7 @@
 
 #pragma once
 #include "DrawToolsDlg.h"
+#include "MFC_STARTDoc.h"
 
 
 class CMFCSTARTView : public CView

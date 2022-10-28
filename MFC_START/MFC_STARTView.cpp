@@ -173,7 +173,7 @@ void CMFCSTARTView::OpenDTDlgCmd()
 {
 	if (_toolDlg == nullptr)
 	{
-		_toolDlg = new DrawToolsDlg();
+		_toolDlg = new DrawToolsDlg(this);
 		_toolDlg->Create(IDD_DRAWTOOLSDLG, this);
 	}
 	_toolDlg->ShowWindow(SW_SHOW);
