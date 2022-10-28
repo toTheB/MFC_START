@@ -26,4 +26,5 @@ public:
 	virtual BOOL OnInitDialog();
 	// 选择绘画工具
 	CComboBox _toolsCombo;
+	afx_msg void OnCbnSelchangeToolscombo();
 };

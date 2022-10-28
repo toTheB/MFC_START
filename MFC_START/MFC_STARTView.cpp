@@ -47,7 +47,7 @@ CMFCSTARTView::CMFCSTARTView() noexcept
 	_oldPen = nullptr;
 	_mouseDown = false;
 	_toolDlg = nullptr;
-	_drawTask = DRAW_DOT;
+	DrawTask = DRAW_DOT;
 }
 
 CMFCSTARTView::~CMFCSTARTView()
@@ -76,7 +76,21 @@ void CMFCSTARTView::OnDraw(CDC* pDC)
 	// TODO: 在此处为本机数据添加绘制代码
 	if (_mouseDown)
 	{
-		DrawCircle();
+		switch (DrawTask)
+		{
+		case DRAW_DOT:
+			DrawDot();
+			break;
+		case DRAW_LINE:
+			DrawLine();
+			break;
+		case DRAW_REC:
+			DrawRec();
+			break;
+		case DRAW_CIRCLE:
+			DrawCircle();
+			break;
+		}
 	}
 
 }

@@ -5,7 +5,7 @@
 #include "MFC_START.h"
 #include "afxdialogex.h"
 #include "DrawToolsDlg.h"
-
+#include "MFC_STARTView.h"
 
 // DrawToolsDlg 对话框
 
@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(DrawToolsDlg, CDialog)
 DrawToolsDlg::DrawToolsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DRAWTOOLSDLG, pParent)
 {
-	
+
 }
 
 DrawToolsDlg::~DrawToolsDlg()
@@ -29,6 +29,7 @@ void DrawToolsDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(DrawToolsDlg, CDialog)
+	ON_CBN_SELCHANGE(IDC_TOOLSCOMBO, &DrawToolsDlg::OnCbnSelchangeToolscombo)
 END_MESSAGE_MAP()
 
 
@@ -55,4 +56,12 @@ BOOL DrawToolsDlg::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
+}
+
+
+void DrawToolsDlg::OnCbnSelchangeToolscombo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CMFCSTARTView* parentWnd = dynamic_cast<CMFCSTARTView*>(m_pParentWnd);
+	parentWnd->DrawTask = _toolsCombo.GetCurSel();
 }
