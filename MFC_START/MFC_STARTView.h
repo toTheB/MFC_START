@@ -57,7 +57,9 @@ protected:
 	DrawToolsDlg* _toolDlg;
 
 public:
-	int DrawTask;
+	int DrawTask; // 绘画模式
+	int LineWidth; // 线宽
+	int PenStyle; // 线型
 
 	// 成员函数
 protected:

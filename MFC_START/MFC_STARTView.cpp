@@ -44,11 +44,15 @@ END_MESSAGE_MAP()
 CMFCSTARTView::CMFCSTARTView() noexcept
 {
 	// TODO: 在此处添加构造代码
-	_oldPen = nullptr;
+	// 以默认值初始化一系列成员
 	_mouseDown = false;
+	_oldPen = nullptr;
 	_toolDlg = nullptr;
 	DrawTask = DRAW_DOT;
+	LineWidth = 1;
+	PenStyle = PS_SOLID;
 }
+
 
 CMFCSTARTView::~CMFCSTARTView()
 {
@@ -190,7 +194,7 @@ void CMFCSTARTView::DrawLine()
 	auto pDC = GetDC();
 	// 切换画笔
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 1, AFX_IDC_COLOR_DARKBLUE);
+	pen.CreatePen(PenStyle, LineWidth, RGB(255,0,0));
 	_oldPen = pDC->SelectObject(&pen);
 	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	// 覆盖旧位置
@@ -208,7 +212,7 @@ void CMFCSTARTView::DrawRec()
 	CDC* pDC = GetDC();
 	// 切换画笔
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 1, AFX_IDC_COLOR_DARKBLUE);
+	pen.CreatePen(PenStyle, LineWidth, AFX_IDC_COLOR_DARKBLUE);
 	_oldPen = pDC->SelectObject(&pen);
 	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
@@ -223,7 +227,7 @@ void CMFCSTARTView::DrawCircle()
 {
 	CDC* pDC = GetDC();
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 1, AFX_IDC_COLOR_DARKBLUE);
+	pen.CreatePen(PenStyle, LineWidth, AFX_IDC_COLOR_DARKBLUE);
 	_oldPen = pDC->SelectObject(&pen);
 	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
