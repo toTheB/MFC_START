@@ -47,14 +47,19 @@ public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	void OpenDTDlgCmd();
 
-	// 成员变量
+	// 私有成员变量
 protected:
 	CPen* _oldPen;
+	CPoint _polyStartPoint;
 	CPoint _startPoint;
 	CPoint _oldPoint;
 	CPoint _curPoint;
 	bool _mouseDown;
+	// 记录是否正在绘制多边形的过程中，因为多边形绘制时鼠标的操作与其他模式不同。
+	bool _drawingPoly;
+	bool _endingPoly;
 	DrawToolsDlg* _toolDlg;
+
 
 public:
 	int DrawTask; // 绘画模式
@@ -67,6 +72,7 @@ protected:
 	void DrawLine(); // 线
 	void DrawRec(); // 矩形
 	void DrawCircle(); // 圆
+	void DrawPoly();
 
 
 	//常量
@@ -77,6 +83,7 @@ public:
 	static const int DRAW_CIRCLE = 3; // 圆
 	static const int DRAW_POLY = 4;
 	static const int DRAW_CURVE = 5;
+	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // MFC_STARTView.cpp 中的调试版本
