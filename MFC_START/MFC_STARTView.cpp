@@ -255,17 +255,6 @@ void CMFCSTARTView::DrawCircle()
 	pDC->SelectObject(_oldPen);
 }
 
-void CMFCSTARTView::DrawPoly()
-{
-	CDC* pDC = GetDC();
-	// 切换画笔
-	CPen pen;
-	pen.CreatePen(PenStyle, LineWidth, AFX_IDC_COLOR_DARKBLUE);
-	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
-}
-
-
 
 
 void CMFCSTARTView::OnMButtonDown(UINT nFlags, CPoint point)

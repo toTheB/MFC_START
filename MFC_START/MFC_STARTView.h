@@ -72,7 +72,6 @@ protected:
 	void DrawLine(); // 线
 	void DrawRec(); // 矩形
 	void DrawCircle(); // 圆
-	void DrawPoly();
 
 
 	//常量
