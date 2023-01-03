@@ -45,6 +45,8 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnFileSaveAs();
 	void OpenDTDlgCmd();
 
 	// 私有成员变量
@@ -58,6 +60,7 @@ protected:
 	bool _drawingPoly; // 记录是否正在绘制多边形的过程中，因为多边形绘制时鼠标的操作与其他模式不同。
 	bool _endingPoly; // 记录是否闭合一个多边形，OnDraw中判断用
 	DrawToolsDlg* _toolDlg; // 绘图工具子对话框
+	CString _savePath; // 文件保存路径
 
 	// 共有成员变量
 public:
@@ -72,7 +75,7 @@ protected:
 	void DrawLine(); // 线
 	void DrawRec(); // 矩形
 	void DrawCircle(); // 圆
-
+	bool SaveBmp(HBITMAP hBitmap, CString fileName);
 
 	//常量
 public:
@@ -82,7 +85,7 @@ public:
 	static const int DRAW_CIRCLE = 3; // 圆
 	static const int DRAW_POLY = 4;
 	static const int DRAW_CURVE = 5;
-	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
+
 };
 
 #ifndef _DEBUG  // MFC_STARTView.cpp 中的调试版本

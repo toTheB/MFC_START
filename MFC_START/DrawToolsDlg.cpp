@@ -105,6 +105,9 @@ void DrawToolsDlg::OnEnChangeLinewidthedit()
 	// 获取Edit中的字符串
 	CString str;
 	_lineWidthEdit.GetWindowTextW(str);
+	// 如果字符串为空，直接返回。
+	if (str.GetLength() == 0)
+		return;
 	auto parentWnd = dynamic_cast<CMFCSTARTView*>(m_pParentWnd);
 	// 将其赋值给线宽
 	parentWnd->LineWidth = std::stoi(str.GetBuffer(0));
