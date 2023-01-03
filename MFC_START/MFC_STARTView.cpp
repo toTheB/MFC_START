@@ -91,8 +91,10 @@ void CMFCSTARTView::OnDraw(CDC* pDC)
 		case DRAW_DOT:
 			DrawDot();
 			break;
+		// 画线、多边形、曲线都是用DrawLine。
 		case DRAW_LINE:
 		case DRAW_POLY:
+		case DRAW_CURVE:
 			DrawLine();
 			break;
 		case DRAW_REC:
@@ -154,7 +156,15 @@ CMFCSTARTDoc* CMFCSTARTView::GetDocument() const // 非调试版本是内联的
 void CMFCSTARTView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	_curPoint = point;
+
+	// 绘制曲线时，由于采用的是用直线首尾相连的方式，所以绘制曲线时，更新方式不同。
+	if (DrawTask == DRAW_CURVE) {
+		_startPoint = _oldPoint;
+		_curPoint = point;
+	}
+	else
+		_curPoint = point;
+
 	Invalidate(0);
 
 	CView::OnMouseMove(nFlags, point);
