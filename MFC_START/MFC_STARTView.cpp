@@ -39,6 +39,7 @@ BEGIN_MESSAGE_MAP(CMFCSTARTView, CView)
 	// 打开绘图工具对话框
 	ON_COMMAND(1, &CMFCSTARTView::OpenDTDlgCmd)
 	ON_COMMAND(2, &CMFCSTARTView::OnFileSaveAs)
+	ON_COMMAND(3, &CMFCSTARTView::OnFileOpen)
 END_MESSAGE_MAP()
 
 // CMFCSTARTView 构造/析构
@@ -383,26 +384,56 @@ void CMFCSTARTView::OnFileSaveAs()
 {
 	// TODO: 在此添加命令处理程序代码
 
-	CString filepath;
-	TCHAR szFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
-	CFileDialog fileDlg(FALSE, _T("txt"), nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+	CString filePath; // 文件保存路径
+	// 初始化CFileDialog
+	TCHAR szFilter[] = _T("位图文件(*.bmp)||自定义文件(*.peng)||");
+	CFileDialog fileDlg(FALSE, _T("bmp"), nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 
-	if (IDOK == fileDlg.DoModal())
+	if (IDOK == fileDlg.DoModal())// 如果对话框打开成功
 	{
-		filepath = fileDlg.GetPathName();
+		filePath = fileDlg.GetPathName();
 		HDC hDC = GetDC()->m_hDC;//获取DC
 		RECT rect;
-		GetClientRect(&rect);
+		GetClientRect(&rect); //获取客户端大小
 		HDC hDCMem = CreateCompatibleDC(hDC);//创建兼容DC
 		HBITMAP hBitMap = CreateCompatibleBitmap(hDC, abs(rect.right - rect.left), abs(rect.bottom - rect.top));//创建兼容位图
 		HBITMAP hOldMap = (HBITMAP)::SelectObject(hDCMem, hBitMap);//将位图选入DC,并保存返回值
 		BitBlt(hDCMem, 0, 0, abs(rect.right - rect.left), abs(rect.bottom - rect.top), hDC, 0, 0, SRCCOPY);//将屏幕DC的图象复制到内存DC中
-		if (SaveBmp(hBitMap, filepath.GetBuffer())) {
+		if (SaveBmp(hBitMap, filePath.GetBuffer())) {// 保存成功
 			MessageBox(_T("保存成功"));
 		}
-		else
+		else // 保存失败
 		{
 			MessageBox(_T("保存失败"));
 		}
+	}
+}
+
+
+void CMFCSTARTView::OnFileOpen()
+{
+	// TODO: 在此添加命令处理程序代码
+	CString filePath; // 文件保存路径
+	// 初始化CFileDialog
+	TCHAR szFilter[] = _T("位图文件(*.bmp)||自定义文件(*.peng)||");
+	CFileDialog fileDlg(true, _T("bmp"), nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+
+	if (IDOK == fileDlg.DoModal())// 如果对话框打开成功
+	{
+		CBitmap mybitmap;
+		filePath = fileDlg.GetPathName();
+		HBITMAP bitmap = (HBITMAP)LoadImage(NULL, filePath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+		mybitmap.Attach(bitmap);
+
+		CDC* pdc = GetDC();
+		CDC bmp;
+		bmp.CreateCompatibleDC(pdc); //创建一个兼容pdc的设备上下文
+		bmp.SelectObject(&mybitmap); //替换设备环境位图
+
+		RECT rect;
+		GetClientRect(&rect); //获取客户端大小
+		pdc->BitBlt(0, 0, abs(rect.right - rect.left), abs(rect.bottom - rect.top), &bmp, 0, 0, SRCCOPY); //复制位图至pdc 也就是主窗口
+		mybitmap.DeleteObject();//释放掉对象
+		ReleaseDC(pdc); //释放掉设备上下文
 	}
 }

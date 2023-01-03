@@ -86,6 +86,7 @@ public:
 	static const int DRAW_POLY = 4;
 	static const int DRAW_CURVE = 5;
 
+	afx_msg void OnFileOpen();
 };
 
 #ifndef _DEBUG  // MFC_STARTView.cpp 中的调试版本
