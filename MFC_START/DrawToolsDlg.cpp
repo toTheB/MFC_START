@@ -31,6 +31,7 @@ void DrawToolsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TOOLSCOMBO, _toolsCombo);
 	DDX_Control(pDX, IDC_LineWidthEdit, _lineWidthEdit);
 	DDX_Control(pDX, IDC_PenStyleCombo, _penStyleCombo);
+	DDX_Control(pDX, IDC_ColorEdit, _colorEdit);
 }
 
 
@@ -38,6 +39,7 @@ BEGIN_MESSAGE_MAP(DrawToolsDlg, CDialog)
 	ON_CBN_SELCHANGE(IDC_TOOLSCOMBO, &DrawToolsDlg::OnCbnSelchangeToolscombo)
 	ON_EN_CHANGE(IDC_LineWidthEdit, &DrawToolsDlg::OnEnChangeLinewidthedit)
 	ON_CBN_SELCHANGE(IDC_PenStyleCombo, &DrawToolsDlg::OnCbnSelchangePenstylecombo)
+	ON_EN_CHANGE(IDC_ColorEdit, &DrawToolsDlg::OnEnChangeColoredit)
 END_MESSAGE_MAP()
 
 
@@ -106,4 +108,33 @@ void DrawToolsDlg::OnEnChangeLinewidthedit()
 	auto parentWnd = dynamic_cast<CMFCSTARTView*>(m_pParentWnd);
 	// 将其赋值给线宽
 	parentWnd->LineWidth = std::stoi(str.GetBuffer(0));
+}
+
+
+void DrawToolsDlg::OnEnChangeColoredit()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，它将不
+	// 发送此通知，除非重写 CDialog::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
+
+	// 从Edit中获取字符串
+	CString CStr;
+	_colorEdit.GetWindowTextW(CStr);
+
+	// 如果输入不合法，就直接推出。
+	if (CStr.GetLength() != 7 || CStr[0] != '#')
+		return;
+
+	// 输入合法的话分别从12、34、56位字符中解析出rgb值。
+	int r = std::stoi((CString(CStr.GetAt(1)) + CString(CStr.GetAt(2))).GetBuffer(), nullptr, 16);
+	int g = std::stoi((CString(CStr.GetAt(3)) + CString(CStr.GetAt(4))).GetBuffer(), nullptr, 16);
+	int b = std::stoi((CString(CStr.GetAt(5)) + CString(CStr.GetAt(6))).GetBuffer(), nullptr, 16);
+
+	auto parentWnd = dynamic_cast<CMFCSTARTView*>(m_pParentWnd);
+    // 可能是由于使用了异或笔的原因，我发现需要用255减去原先的rbg值才能画出对的颜色。
+	parentWnd->PenColor = RGB(255 - r, 255 - g, 255 - b);
+
 }

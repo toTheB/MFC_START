@@ -11,6 +11,8 @@
 #define IDC_LineWidthEdit               1005
 #define IDC_COMBO1                      1006
 #define IDC_PenStyleCombo               1006
+#define IDC_EDIT1                       1007
+#define IDC_ColorEdit                   1007
 #define ID_32771                        32771
 #define ID_OpenDTDlgCmd                 32772
 #define ID_32773                        32773
@@ -25,7 +27,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        314
 #define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1007
+#define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

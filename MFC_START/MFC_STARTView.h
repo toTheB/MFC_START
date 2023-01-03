@@ -49,22 +49,22 @@ public:
 
 	// 私有成员变量
 protected:
-	CPen* _oldPen;
-	CPoint _polyStartPoint;
-	CPoint _startPoint;
-	CPoint _oldPoint;
-	CPoint _curPoint;
-	bool _mouseDown;
-	// 记录是否正在绘制多边形的过程中，因为多边形绘制时鼠标的操作与其他模式不同。
-	bool _drawingPoly;
-	bool _endingPoly;
-	DrawToolsDlg* _toolDlg;
+	CPen* _oldPen; // 旧笔
+	CPoint _polyStartPoint; // 多边形起点
+	CPoint _startPoint; // 绘图起点
+	CPoint _oldPoint; // 旧的鼠标位置（XOR覆盖用）
+	CPoint _curPoint; // 当前鼠标位置（绘图用）
+	bool _mouseDown; // 鼠标左键是否按下
+	bool _drawingPoly; // 记录是否正在绘制多边形的过程中，因为多边形绘制时鼠标的操作与其他模式不同。
+	bool _endingPoly; // 记录是否闭合一个多边形，OnDraw中判断用
+	DrawToolsDlg* _toolDlg; // 绘图工具子对话框
 
-
+	// 共有成员变量
 public:
 	int DrawTask; // 绘画模式
 	int LineWidth; // 线宽
 	int PenStyle; // 线型
+	COLORREF PenColor; // 颜色
 
 	// 成员函数
 protected:

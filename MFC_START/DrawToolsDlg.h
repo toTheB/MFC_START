@@ -24,13 +24,16 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	CComboBox _toolsCombo; // 绘画工具
+	CEdit _lineWidthEdit; // 线宽
+	CComboBox _penStyleCombo; // 线型
+	CEdit _colorEdit; // 颜色
+
 	virtual BOOL OnInitDialog();
-	// 选择绘画工具
-	CComboBox _toolsCombo;
+
+	// 消息响应函数
 	afx_msg void OnCbnSelchangeToolscombo();
 	afx_msg void OnEnChangeLinewidthedit();
-	CEdit _lineWidthEdit;
-
 	afx_msg void OnCbnSelchangePenstylecombo();
-	CComboBox _penStyleCombo;
+	afx_msg void OnEnChangeColoredit();
 };

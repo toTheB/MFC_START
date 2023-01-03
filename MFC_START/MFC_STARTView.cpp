@@ -54,6 +54,7 @@ CMFCSTARTView::CMFCSTARTView() noexcept
 	DrawTask = DRAW_DOT;
 	LineWidth = 1;
 	PenStyle = PS_SOLID;
+	PenColor = RGB(255, 255, 255);
 }
 
 
@@ -189,6 +190,20 @@ void CMFCSTARTView::OnLButtonUp(UINT nFlags, CPoint point)
 	CView::OnLButtonUp(nFlags, point);
 }
 
+void CMFCSTARTView::OnMButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	// 按下鼠标中件时，如果正在画多边形，那么就闭合这个多边形，完成这次绘画。
+	if (_drawingPoly) {
+		_drawingPoly = false;
+		// 更改绘制点，让图形首尾闭合
+		_curPoint = _polyStartPoint;
+		_endingPoly = true;
+		Invalidate(0);
+	}
+	CView::OnMButtonDown(nFlags, point);
+}
+
 // 打开绘画工具对话框
 void CMFCSTARTView::OpenDTDlgCmd()
 {
@@ -203,7 +218,7 @@ void CMFCSTARTView::OpenDTDlgCmd()
 void CMFCSTARTView::DrawDot()
 {
 	auto pDC = GetDC();
-	pDC->SetPixel(_curPoint, AFX_IDC_COLOR_DARKBLUE);
+	pDC->SetPixel(_curPoint, PenColor);
 }
 
 void CMFCSTARTView::DrawLine()
@@ -211,7 +226,7 @@ void CMFCSTARTView::DrawLine()
 	auto pDC = GetDC();
 	// 切换画笔
 	CPen pen;
-	pen.CreatePen(PenStyle, LineWidth, RGB(255, 0, 0));
+	pen.CreatePen(PenStyle, LineWidth, PenColor);
 	_oldPen = pDC->SelectObject(&pen);
 	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	// 覆盖旧位置
@@ -229,7 +244,7 @@ void CMFCSTARTView::DrawRec()
 	CDC* pDC = GetDC();
 	// 切换画笔
 	CPen pen;
-	pen.CreatePen(PenStyle, LineWidth, AFX_IDC_COLOR_DARKBLUE);
+	pen.CreatePen(PenStyle, LineWidth, PenColor);
 	_oldPen = pDC->SelectObject(&pen);
 	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
@@ -244,7 +259,7 @@ void CMFCSTARTView::DrawCircle()
 {
 	CDC* pDC = GetDC();
 	CPen pen;
-	pen.CreatePen(PenStyle, LineWidth, AFX_IDC_COLOR_DARKBLUE);
+	pen.CreatePen(PenStyle, LineWidth, PenColor);
 	_oldPen = pDC->SelectObject(&pen);
 	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
@@ -253,20 +268,4 @@ void CMFCSTARTView::DrawCircle()
 	_oldPoint = _curPoint;// 更新旧点
 	// 恢复画笔
 	pDC->SelectObject(_oldPen);
-}
-
-
-
-void CMFCSTARTView::OnMButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	// 按下鼠标中件时，如果正在画多边形，那么就闭合这个多边形，完成这次绘画。
-	if (_drawingPoly) {
-		_drawingPoly = false;
-		// 更改绘制点，让图形首位闭合
-		_curPoint = _polyStartPoint;
-		_endingPoly = true;
-		Invalidate(0);
-	}
-	CView::OnMButtonDown(nFlags, point);
 }
