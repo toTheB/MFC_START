@@ -245,21 +245,15 @@ void CMFCSTARTView::DrawLine(bool xorMode)
 	// 切换画笔
 	CPen pen;
 	COLORREF color;
-	// 根据是否为异或笔来选择颜色，如果异或需要进行反色
-	if (xorMode)
-		color = RGB(255 - R, 255 - G, 255 - B);
-	else
-		color = RGB(R, G, B);
+	color = RGB(255 - R, 255 - G, 255 - B);
 	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	if (xorMode) {
-		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
-		// 覆盖旧位置
-		pDC->MoveTo(_startPoint);
-		pDC->LineTo(_oldPoint);
-	}
+	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	// 覆盖旧位置
+	pDC->MoveTo(_startPoint);
+	pDC->LineTo(_oldPoint);
 	// 如果是闭合一个多边形，那么这个情况比较特殊
-	if (_endingPoly) {
+	if (!xorMode || _endingPoly) {
 		pDC->SetROP2(R2_NOTCOPYPEN);
 	}
 	// 画新位置
@@ -277,18 +271,15 @@ void CMFCSTARTView::DrawRec(bool xorMode)
 	// 切换画笔
 	CPen pen;
 	COLORREF color;
-	// 根据是否为异或笔来选择颜色，如果异或需要进行反色
-	if (xorMode)
-		color = RGB(255 - R, 255 - G, 255 - B);
-	else
-		color = RGB(R, G, B);
+	color = RGB(255 - R, 255 - G, 255 - B);
 	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	if (xorMode)
-		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
-	if (xorMode)
-		pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	if (!xorMode) {
+		pDC->SetROP2(R2_NOTCOPYPEN);
+	}
 	pDC->Rectangle(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
 	// 恢复画笔
@@ -300,18 +291,15 @@ void CMFCSTARTView::DrawCircle(bool xorMode)
 	CDC* pDC = GetDC();
 	CPen pen;
 	COLORREF color;
-	// 根据是否为异或笔来选择颜色，如果异或需要进行反色
-	if (xorMode)
-		color = RGB(255 - R, 255 - G, 255 - B);
-	else
-		color = RGB(R, G, B);
+	color = RGB(255 - R, 255 - G, 255 - B);
 	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	if (xorMode)
-		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
-	if (xorMode)
-		pDC->Ellipse(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	pDC->Ellipse(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	if (!xorMode) {
+		pDC->SetROP2(R2_NOTCOPYPEN);
+	}
 	pDC->Ellipse(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
 	// 恢复画笔
