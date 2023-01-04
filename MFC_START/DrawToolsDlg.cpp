@@ -138,5 +138,4 @@ void DrawToolsDlg::OnEnChangeColoredit()
 	parentWnd->R = std::stoi((CString(CStr.GetAt(1)) + CString(CStr.GetAt(2))).GetBuffer(), nullptr, 16);
 	parentWnd->G = std::stoi((CString(CStr.GetAt(3)) + CString(CStr.GetAt(4))).GetBuffer(), nullptr, 16);
 	parentWnd->B = std::stoi((CString(CStr.GetAt(5)) + CString(CStr.GetAt(6))).GetBuffer(), nullptr, 16);
-
 }
