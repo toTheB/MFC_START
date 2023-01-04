@@ -51,6 +51,7 @@ CMFCSTARTView::CMFCSTARTView() noexcept
 	// TODO: 在此处添加构造代码
 	// 以默认值初始化一系列成员
 	_mouseDown = false;
+	_mouseJustUp = false;
 	_drawingPoly = false;
 	_endingPoly = false;
 	_oldPen = nullptr;
@@ -58,9 +59,9 @@ CMFCSTARTView::CMFCSTARTView() noexcept
 	DrawTask = DRAW_DOT;
 	LineWidth = 1;
 	PenStyle = PS_SOLID;
-	R = 255;
-	G = 255;
-	B = 255;
+	R = 0;
+	G = 0;
+	B = 0;
 }
 
 
@@ -88,10 +89,8 @@ void CMFCSTARTView::OnDraw(CDC* pDC)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
-	if (_mouseDown || _drawingPoly || _endingPoly)
+	if (_mouseDown || _mouseJustUp || _drawingPoly || _endingPoly)
 	{
-		if (_endingPoly)
-			_endingPoly = false;
 		switch (DrawTask)
 		{
 		case DRAW_DOT:
@@ -101,15 +100,19 @@ void CMFCSTARTView::OnDraw(CDC* pDC)
 		case DRAW_LINE:
 		case DRAW_POLY:
 		case DRAW_CURVE:
-			DrawLine(false);
+			DrawLine(!(_mouseJustUp || DrawTask == DRAW_CURVE));
 			break;
 		case DRAW_REC:
-			DrawRec();
+			DrawRec(!_mouseJustUp);
 			break;
 		case DRAW_CIRCLE:
-			DrawCircle();
+			DrawCircle(!_mouseJustUp);
 			break;
 		}
+		if (_endingPoly)
+			_endingPoly = false;
+		if (_mouseJustUp)
+			_mouseJustUp = false;
 	}
 
 }
@@ -200,9 +203,8 @@ void CMFCSTARTView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	_mouseDown = false;
-	if (_drawingPoly)
-		_startPoint = point;
-
+	_mouseJustUp = true;
+	Invalidate(0);
 	CView::OnLButtonUp(nFlags, point);
 }
 
@@ -250,17 +252,22 @@ void CMFCSTARTView::DrawLine(bool xorMode)
 		color = RGB(R, G, B);
 	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	if (xorMode)
-		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
-	// 覆盖旧位置
 	if (xorMode) {
+		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+		// 覆盖旧位置
 		pDC->MoveTo(_startPoint);
 		pDC->LineTo(_oldPoint);
+	}
+	// 如果是闭合一个多边形，那么这个情况比较特殊
+	if (_endingPoly) {
+		pDC->SetROP2(R2_NOTCOPYPEN);
 	}
 	// 画新位置
 	pDC->MoveTo(_startPoint);
 	pDC->LineTo(_curPoint);
 	_oldPoint = _curPoint; // 更新旧点
+	if (_drawingPoly && _mouseJustUp)
+		_startPoint = _curPoint;
 	pDC->SelectObject(_oldPen);// 恢复画笔
 }
 
