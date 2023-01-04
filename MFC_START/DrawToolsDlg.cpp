@@ -18,6 +18,7 @@ IMPLEMENT_DYNAMIC(DrawToolsDlg, CDialog)
 DrawToolsDlg::DrawToolsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DRAWTOOLSDLG, pParent)
 {
+	// 记录父窗口，交换数据用。
 	m_pParentWnd = pParent;
 }
 

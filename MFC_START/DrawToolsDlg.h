@@ -32,8 +32,8 @@ public:
 	virtual BOOL OnInitDialog();
 
 	// 消息响应函数
-	afx_msg void OnCbnSelchangeToolscombo();
-	afx_msg void OnEnChangeLinewidthedit();
-	afx_msg void OnCbnSelchangePenstylecombo();
-	afx_msg void OnEnChangeColoredit();
+	afx_msg void OnCbnSelchangeToolscombo(); // 改变绘图模式
+	afx_msg void OnEnChangeLinewidthedit(); // 改变线宽
+	afx_msg void OnCbnSelchangePenstylecombo(); // 改变线型
+	afx_msg void OnEnChangeColoredit(); // 改变颜色
 };

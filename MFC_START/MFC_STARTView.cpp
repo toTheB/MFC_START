@@ -81,17 +81,16 @@ BOOL CMFCSTARTView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CMFCSTARTView::OnDraw(CDC* pDC)
 {
-	CMFCSTARTDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
-	if (!pDoc)
-		return;
-
 	// TODO: 在此处为本机数据添加绘制代码
 	if (_mouseDown || _mouseJustUp || _drawingPoly || _endingPoly)
-	{
+	{	// 判断是否需要绘制，其中_drawingPoly和_endingPoly是多边形绘制相关的。
+		CMFCSTARTDoc* pDoc = GetDocument();
+		ASSERT_VALID(pDoc);
+		if (!pDoc)
+			return;
 		switch (DrawTask)
 		{
-		case DRAW_DOT:
+		case DRAW_DOT:// 画点
 			DrawDot();
 			break;
 			// 画线、多边形、曲线都是用DrawLine。
@@ -100,19 +99,19 @@ void CMFCSTARTView::OnDraw(CDC* pDC)
 		case DRAW_CURVE:
 			DrawLine(!(_mouseJustUp || DrawTask == DRAW_CURVE));
 			break;
-		case DRAW_REC:
+		case DRAW_REC:// 画矩形
 			DrawRec(!_mouseJustUp);
 			break;
-		case DRAW_CIRCLE:
+		case DRAW_CIRCLE:// 画圆
 			DrawCircle(!_mouseJustUp);
 			break;
 		}
+		// 这两个状态都表示这一笔最终确定，只画一下，所以画完重置。
 		if (_endingPoly)
 			_endingPoly = false;
 		if (_mouseJustUp)
 			_mouseJustUp = false;
 	}
-
 }
 
 
@@ -169,11 +168,10 @@ void CMFCSTARTView::OnMouseMove(UINT nFlags, CPoint point)
 		_startPoint = _oldPoint;
 		_curPoint = point;
 	}
-	else
+	else // 除了绘制曲线外，更新_curPoint就行。
 		_curPoint = point;
 
 	Invalidate(0);
-
 	CView::OnMouseMove(nFlags, point);
 }
 
@@ -188,7 +186,7 @@ void CMFCSTARTView::OnLButtonDown(UINT nFlags, CPoint point)
 		_oldPoint = point;
 	}
 	if (DrawTask == DRAW_POLY && !_drawingPoly) {
-		// 如果是刚开始画多边形，那么记录下多边形的起点，以及更改绘画状态。
+		// 如果画多边形的第一条边，那么记录下多边形的起点，以及更改绘画状态。
 		_drawingPoly = true;
 		_polyStartPoint = point;
 	}
@@ -225,44 +223,41 @@ void CMFCSTARTView::OpenDTDlgCmd()
 {
 	if (_toolDlg == nullptr)
 	{
+		// 如果工具对话框不在，创建一个
 		_toolDlg = new DrawToolsDlg(this);
 		_toolDlg->Create(IDD_DRAWTOOLSDLG, this);
 	}
+	// 如果之前已经创建过，直接打开
 	_toolDlg->ShowWindow(SW_SHOW);
 }
 
 void CMFCSTARTView::DrawDot()
 {
 	auto pDC = GetDC();
+	// 绘制像素时，直接用SetPixel
 	pDC->SetPixel(_curPoint, RGB(R, G, B));
 }
 
 void CMFCSTARTView::DrawLine(bool xorMode)
 {
 	auto pDC = GetDC();
-	//int nMode = pDC->GetROP2();
-	//CString temp_value = _T("");   //temp_value用来处理int值
-	//temp_value.Format(_T("%d"), nMode);//固定格式
-	//AfxMessageBox(temp_value);
 	// 切换画笔
 	CPen pen;
-	COLORREF color;
-	color = RGB(R, G, B);
-	pen.CreatePen(PenStyle, LineWidth, color);
-	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_NOTXORPEN);// 设置绘画模式为异或
+	pen.CreatePen(PenStyle, LineWidth, RGB(R, G, B));// 创建笔
+	_oldPen = pDC->SelectObject(&pen);// 选择笔
+	pDC->SetROP2(R2_NOTXORPEN);// 设置绘画模式为NOTXOR，因为异或是一次反色，所以加上NOT才是正确的颜色。
 	// 覆盖旧位置
 	pDC->MoveTo(_startPoint);
 	pDC->LineTo(_oldPoint);
-	// 如果是闭合一个多边形，那么这个情况比较特殊
-	if (!xorMode || _endingPoly) {
+	if (!xorMode || _endingPoly) {// _endingPoly是为了正确画多边形多加的一个判断。
+		// 画新位置时，如果松手了，说明这一笔定下来了，就可以切换成默认的COPYPEN。
 		pDC->SetROP2(R2_COPYPEN);
 	}
 	// 画新位置
 	pDC->MoveTo(_startPoint);
 	pDC->LineTo(_curPoint);
 	_oldPoint = _curPoint; // 更新旧点
-	if (_drawingPoly && _mouseJustUp)
+	if (_drawingPoly && _mouseJustUp)// 画多边形时，额外更新点，因为首尾相连。
 		_startPoint = _curPoint;
 	pDC->SelectObject(_oldPen);// 恢复画笔
 }
@@ -272,40 +267,36 @@ void CMFCSTARTView::DrawRec(bool xorMode)
 	CDC* pDC = GetDC();
 	// 切换画笔
 	CPen pen;
-	COLORREF color;
-	color = RGB(R, G, B);
-	pen.CreatePen(PenStyle, LineWidth, color);
-	_oldPen = pDC->SelectObject(&pen);
+	pen.CreatePen(PenStyle, LineWidth, RGB(R, G, B));// 创建笔
+	_oldPen = pDC->SelectObject(&pen);// 选择笔
 	pDC->SetROP2(R2_NOTXORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
 	pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
 	if (!xorMode) {
+		// 画新位置时，如果松手了，说明这一笔定下来了，就可以切换成默认的COPYPEN。
 		pDC->SetROP2(R2_COPYPEN);
 	}
 	pDC->Rectangle(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
-	// 恢复画笔
-	pDC->SelectObject(_oldPen);
+	pDC->SelectObject(_oldPen);	// 恢复画笔
 }
 
 void CMFCSTARTView::DrawCircle(bool xorMode)
 {
 	CDC* pDC = GetDC();
 	CPen pen;
-	COLORREF color;
-	color = RGB(R, G, B);
-	pen.CreatePen(PenStyle, LineWidth, color);
-	_oldPen = pDC->SelectObject(&pen);
+	pen.CreatePen(PenStyle, LineWidth, RGB(R, G, B));// 创建笔
+	_oldPen = pDC->SelectObject(&pen);// 选择笔
 	pDC->SetROP2(R2_NOTXORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
 	pDC->Ellipse(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
 	if (!xorMode) {
+		// 画新位置时，如果松手了，说明这一笔定下来了，就可以切换成默认的COPYPEN。
 		pDC->SetROP2(R2_COPYPEN);
 	}
 	pDC->Ellipse(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
-	// 恢复画笔
-	pDC->SelectObject(_oldPen);
+	pDC->SelectObject(_oldPen);	// 恢复画笔
 }
 
 
@@ -414,11 +405,11 @@ void CMFCSTARTView::OnFileSaveAs()
 	CString filePath; // 文件保存路径
 	// 初始化CFileDialog
 	TCHAR szFilter[] = _T("位图文件(*.bmp)||自定义文件(*.json)||");
-	CFileDialog fileDlg(FALSE, _T("bmp"), nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+	CFileDialog fileDlg(false, _T("bmp"), nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 
 	if (IDOK == fileDlg.DoModal())// 如果对话框打开成功
 	{
-		filePath = fileDlg.GetPathName();
+		filePath = fileDlg.GetPathName();// 获取文件路径
 		HDC hDC = GetDC()->m_hDC;//获取DC
 		RECT rect;
 		GetClientRect(&rect); //获取客户端大小
@@ -448,7 +439,7 @@ void CMFCSTARTView::OnFileOpen()
 	if (IDOK == fileDlg.DoModal())// 如果对话框打开成功
 	{
 		CBitmap mybitmap;
-		filePath = fileDlg.GetPathName();
+		filePath = fileDlg.GetPathName();// 获取文件路径
 		HBITMAP bitmap = (HBITMAP)LoadImage(NULL, filePath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 		mybitmap.Attach(bitmap);
 

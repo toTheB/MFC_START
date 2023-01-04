@@ -42,12 +42,13 @@ protected:
 
 		// 消息处理
 public:
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnFileSaveAs();
-	void OpenDTDlgCmd();
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point); // 鼠标移动
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);  // 鼠标左键按下
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point); // 鼠标左键起来
+	afx_msg void OnMButtonDown(UINT nFlags, CPoint point); // 鼠标中键按下，画多边形用
+	afx_msg void OnFileSaveAs(); // 点击"另存为"
+	afx_msg void OnFileOpen();// 点击"打开"
+	void OpenDTDlgCmd();// 点击"绘图工具"
 
 	// 私有成员变量
 protected:
@@ -77,7 +78,7 @@ protected:
 	void DrawLine(bool xorMode = true); // 线
 	void DrawRec(bool xorMode = true); // 矩形
 	void DrawCircle(bool xorMode = true); // 圆
-	bool SaveBmp(HBITMAP hBitmap, CString fileName);
+	bool SaveBmp(HBITMAP hBitmap, CString fileName);// 将HBITMAP保存成本地bmp文件
 
 	//常量
 public:
@@ -85,10 +86,9 @@ public:
 	static const int DRAW_LINE = 1; // 线
 	static const int DRAW_REC = 2; // 矩形
 	static const int DRAW_CIRCLE = 3; // 圆
-	static const int DRAW_POLY = 4;
-	static const int DRAW_CURVE = 5;
+	static const int DRAW_POLY = 4; // 多边形
+	static const int DRAW_CURVE = 5; // 曲线
 
-	afx_msg void OnFileOpen();
 };
 
 #ifndef _DEBUG  // MFC_STARTView.cpp 中的调试版本
