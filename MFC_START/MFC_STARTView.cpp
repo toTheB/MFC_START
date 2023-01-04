@@ -58,7 +58,9 @@ CMFCSTARTView::CMFCSTARTView() noexcept
 	DrawTask = DRAW_DOT;
 	LineWidth = 1;
 	PenStyle = PS_SOLID;
-	PenColor = RGB(255, 255, 255);
+	R = 255;
+	G = 255;
+	B = 255;
 }
 
 
@@ -99,7 +101,7 @@ void CMFCSTARTView::OnDraw(CDC* pDC)
 		case DRAW_LINE:
 		case DRAW_POLY:
 		case DRAW_CURVE:
-			DrawLine();
+			DrawLine(false);
 			break;
 		case DRAW_REC:
 			DrawRec();
@@ -232,20 +234,29 @@ void CMFCSTARTView::OpenDTDlgCmd()
 void CMFCSTARTView::DrawDot()
 {
 	auto pDC = GetDC();
-	pDC->SetPixel(_curPoint, PenColor);
+	pDC->SetPixel(_curPoint, RGB(R, G, B));
 }
 
-void CMFCSTARTView::DrawLine()
+void CMFCSTARTView::DrawLine(bool xorMode)
 {
 	auto pDC = GetDC();
 	// 切换画笔
 	CPen pen;
-	pen.CreatePen(PenStyle, LineWidth, PenColor);
+	COLORREF color;
+	// 根据是否为异或笔来选择颜色，如果异或需要进行反色
+	if (xorMode)
+		color = RGB(255 - R, 255 - G, 255 - B);
+	else
+		color = RGB(R, G, B);
+	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	if (xorMode)
+		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	// 覆盖旧位置
-	pDC->MoveTo(_startPoint);
-	pDC->LineTo(_oldPoint);
+	if (xorMode) {
+		pDC->MoveTo(_startPoint);
+		pDC->LineTo(_oldPoint);
+	}
 	// 画新位置
 	pDC->MoveTo(_startPoint);
 	pDC->LineTo(_curPoint);
@@ -253,31 +264,47 @@ void CMFCSTARTView::DrawLine()
 	pDC->SelectObject(_oldPen);// 恢复画笔
 }
 
-void CMFCSTARTView::DrawRec()
+void CMFCSTARTView::DrawRec(bool xorMode)
 {
 	CDC* pDC = GetDC();
 	// 切换画笔
 	CPen pen;
-	pen.CreatePen(PenStyle, LineWidth, PenColor);
+	COLORREF color;
+	// 根据是否为异或笔来选择颜色，如果异或需要进行反色
+	if (xorMode)
+		color = RGB(255 - R, 255 - G, 255 - B);
+	else
+		color = RGB(R, G, B);
+	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	if (xorMode)
+		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
-	pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	if (xorMode)
+		pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
 	pDC->Rectangle(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
 	// 恢复画笔
 	pDC->SelectObject(_oldPen);
 }
 
-void CMFCSTARTView::DrawCircle()
+void CMFCSTARTView::DrawCircle(bool xorMode)
 {
 	CDC* pDC = GetDC();
 	CPen pen;
-	pen.CreatePen(PenStyle, LineWidth, PenColor);
+	COLORREF color;
+	// 根据是否为异或笔来选择颜色，如果异或需要进行反色
+	if (xorMode)
+		color = RGB(255 - R, 255 - G, 255 - B);
+	else
+		color = RGB(R, G, B);
+	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	if (xorMode)
+		pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
-	pDC->Ellipse(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
+	if (xorMode)
+		pDC->Ellipse(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
 	pDC->Ellipse(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
 	// 恢复画笔

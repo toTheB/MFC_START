@@ -12,7 +12,7 @@ protected: // 仅从序列化创建
 	CMFCSTARTView() noexcept;
 	DECLARE_DYNCREATE(CMFCSTARTView)
 
-	// 特性
+		// 特性
 public:
 	CMFCSTARTDoc* GetDocument() const;
 
@@ -40,7 +40,7 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 
-	// 消息处理
+		// 消息处理
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -66,14 +66,16 @@ public:
 	int DrawTask; // 绘画模式
 	int LineWidth; // 线宽
 	int PenStyle; // 线型
-	COLORREF PenColor; // 颜色
+	int R; // 颜色
+	int G; // 颜色
+	int B; // 颜色
 
 	// 成员函数
 protected:
 	void DrawDot(); // 点
-	void DrawLine(); // 线
-	void DrawRec(); // 矩形
-	void DrawCircle(); // 圆
+	void DrawLine(bool xorMode = true); // 线
+	void DrawRec(bool xorMode = true); // 矩形
+	void DrawCircle(bool xorMode = true); // 圆
 	bool SaveBmp(HBITMAP hBitmap, CString fileName);
 
 	//常量

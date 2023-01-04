@@ -131,13 +131,11 @@ void DrawToolsDlg::OnEnChangeColoredit()
 	if (CStr.GetLength() != 7 || CStr[0] != '#')
 		return;
 
-	// 输入合法的话分别从12、34、56位字符中解析出rgb值。
-	int r = std::stoi((CString(CStr.GetAt(1)) + CString(CStr.GetAt(2))).GetBuffer(), nullptr, 16);
-	int g = std::stoi((CString(CStr.GetAt(3)) + CString(CStr.GetAt(4))).GetBuffer(), nullptr, 16);
-	int b = std::stoi((CString(CStr.GetAt(5)) + CString(CStr.GetAt(6))).GetBuffer(), nullptr, 16);
-
 	auto parentWnd = dynamic_cast<CMFCSTARTView*>(m_pParentWnd);
-    // 可能是由于使用了异或笔的原因，我发现需要用255减去原先的rbg值才能画出对的颜色。
-	parentWnd->PenColor = RGB(255 - r, 255 - g, 255 - b);
+
+	// 输入合法的话分别从12、34、56位字符中解析出rgb值。
+	parentWnd->R = std::stoi((CString(CStr.GetAt(1)) + CString(CStr.GetAt(2))).GetBuffer(), nullptr, 16);
+	parentWnd->G = std::stoi((CString(CStr.GetAt(3)) + CString(CStr.GetAt(4))).GetBuffer(), nullptr, 16);
+	parentWnd->B = std::stoi((CString(CStr.GetAt(5)) + CString(CStr.GetAt(6))).GetBuffer(), nullptr, 16);
 
 }
