@@ -14,7 +14,9 @@
 #include "MFC_STARTView.h"
 
 #include "DrawToolsDlg.h"
+#include "json.hpp"
 
+using json = nlohmann::json;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -282,6 +284,7 @@ void CMFCSTARTView::DrawCircle()
 	pDC->SelectObject(_oldPen);
 }
 
+
 // 保存成位图，网上找的方法。
 bool CMFCSTARTView::SaveBmp(HBITMAP hBitmap, CString fileName)
 {
@@ -386,7 +389,7 @@ void CMFCSTARTView::OnFileSaveAs()
 
 	CString filePath; // 文件保存路径
 	// 初始化CFileDialog
-	TCHAR szFilter[] = _T("位图文件(*.bmp)||自定义文件(*.peng)||");
+	TCHAR szFilter[] = _T("位图文件(*.bmp)||自定义文件(*.json)||");
 	CFileDialog fileDlg(FALSE, _T("bmp"), nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 
 	if (IDOK == fileDlg.DoModal())// 如果对话框打开成功
@@ -415,7 +418,7 @@ void CMFCSTARTView::OnFileOpen()
 	// TODO: 在此添加命令处理程序代码
 	CString filePath; // 文件保存路径
 	// 初始化CFileDialog
-	TCHAR szFilter[] = _T("位图文件(*.bmp)||自定义文件(*.peng)||");
+	TCHAR szFilter[] = _T("位图文件(*.bmp)||自定义文件(*.json)||");
 	CFileDialog fileDlg(true, _T("bmp"), nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
 
 	if (IDOK == fileDlg.DoModal())// 如果对话框打开成功

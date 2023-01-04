@@ -60,7 +60,6 @@ protected:
 	bool _drawingPoly; // 记录是否正在绘制多边形的过程中，因为多边形绘制时鼠标的操作与其他模式不同。
 	bool _endingPoly; // 记录是否闭合一个多边形，OnDraw中判断用
 	DrawToolsDlg* _toolDlg; // 绘图工具子对话框
-	CString _savePath; // 文件保存路径
 
 	// 共有成员变量
 public:
