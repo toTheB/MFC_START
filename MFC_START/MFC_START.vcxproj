@@ -185,7 +185,6 @@
   <ItemGroup>
     <ClInclude Include="DrawToolsDlg.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="json.hpp" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MFC_START.h" />
     <ClInclude Include="MFC_STARTDoc.h" />

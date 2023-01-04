@@ -14,9 +14,7 @@
 #include "MFC_STARTView.h"
 
 #include "DrawToolsDlg.h"
-#include "json.hpp"
 
-using json = nlohmann::json;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -242,19 +240,23 @@ void CMFCSTARTView::DrawDot()
 void CMFCSTARTView::DrawLine(bool xorMode)
 {
 	auto pDC = GetDC();
+	//int nMode = pDC->GetROP2();
+	//CString temp_value = _T("");   //temp_value用来处理int值
+	//temp_value.Format(_T("%d"), nMode);//固定格式
+	//AfxMessageBox(temp_value);
 	// 切换画笔
 	CPen pen;
 	COLORREF color;
-	color = RGB(255 - R, 255 - G, 255 - B);
+	color = RGB(R, G, B);
 	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	pDC->SetROP2(R2_NOTXORPEN);// 设置绘画模式为异或
 	// 覆盖旧位置
 	pDC->MoveTo(_startPoint);
 	pDC->LineTo(_oldPoint);
 	// 如果是闭合一个多边形，那么这个情况比较特殊
 	if (!xorMode || _endingPoly) {
-		pDC->SetROP2(R2_NOTCOPYPEN);
+		pDC->SetROP2(R2_COPYPEN);
 	}
 	// 画新位置
 	pDC->MoveTo(_startPoint);
@@ -271,14 +273,14 @@ void CMFCSTARTView::DrawRec(bool xorMode)
 	// 切换画笔
 	CPen pen;
 	COLORREF color;
-	color = RGB(255 - R, 255 - G, 255 - B);
+	color = RGB(R, G, B);
 	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	pDC->SetROP2(R2_NOTXORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
 	pDC->Rectangle(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
 	if (!xorMode) {
-		pDC->SetROP2(R2_NOTCOPYPEN);
+		pDC->SetROP2(R2_COPYPEN);
 	}
 	pDC->Rectangle(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
@@ -291,14 +293,14 @@ void CMFCSTARTView::DrawCircle(bool xorMode)
 	CDC* pDC = GetDC();
 	CPen pen;
 	COLORREF color;
-	color = RGB(255 - R, 255 - G, 255 - B);
+	color = RGB(R, G, B);
 	pen.CreatePen(PenStyle, LineWidth, color);
 	_oldPen = pDC->SelectObject(&pen);
-	pDC->SetROP2(R2_XORPEN);// 设置绘画模式为异或
+	pDC->SetROP2(R2_NOTXORPEN);// 设置绘画模式为异或
 	pDC->SelectStockObject(NULL_BRUSH);// 设置透明刷子
 	pDC->Ellipse(_startPoint.x, _startPoint.y, _oldPoint.x, _oldPoint.y);// 覆盖旧位置
 	if (!xorMode) {
-		pDC->SetROP2(R2_NOTCOPYPEN);
+		pDC->SetROP2(R2_COPYPEN);
 	}
 	pDC->Ellipse(_startPoint.x, _startPoint.y, _curPoint.x, _curPoint.y);// 画新位置
 	_oldPoint = _curPoint;// 更新旧点
